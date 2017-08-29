@@ -1,0 +1,239 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0100 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include "main.h"} {} 
+
+class CalcUI {open
+} {
+  decl {enum { NONE, ADD, SUB, MUL, DIV, EQUALS }} {}
+  decl {int point; int state; int act; double val; double lval; double mval;} {}
+  Function {CalcUI()} {open
+  } {
+    code {reset_vals();} {}
+    Fl_Window MainWindow {open
+      private xywh {836 545 185 220} color 56 visible
+    } {
+      Fl_Group {} {open
+        private xywh {0 0 185 220}
+      } {
+        Fl_Group NumberGr {open
+          private xywh {0 0 185 50}
+        } {
+          Fl_Input NumberInput {
+            callback {set_val(strtod(NumberInput->value(), NULL));
+update_win();} selected
+            private xywh {5 5 175 45} type Float box PLASTIC_DOWN_BOX color 50 selection_color 26 labeltype NO_LABEL labelcolor 79 align 8 textfont 14 textsize 26
+          }
+        }
+        Fl_Group ButtonGr {open
+          private xywh {0 45 185 175}
+        } {
+          Fl_Button {} {
+            label 0
+            callback {handle_number(0);
+update_win();}
+            private xywh {40 175 35 40} color 253 labelsize 23
+          }
+          Fl_Button {} {
+            label 1
+            callback {handle_number(1);
+update_win();}
+            private xywh {5 135 35 40} color 245 labelsize 23
+          }
+          Fl_Button {} {
+            label 2
+            callback {handle_number(2);
+update_win();}
+            private xywh {40 135 35 40} color 245 labelsize 23
+          }
+          Fl_Button {} {
+            label 3
+            callback {handle_number(3);
+update_win();}
+            private xywh {75 135 35 40} color 245 labelsize 23
+          }
+          Fl_Button {} {
+            label 4
+            callback {handle_number(4);
+update_win();}
+            private xywh {5 95 35 40} color 237 labelsize 23
+          }
+          Fl_Button {} {
+            label 5
+            callback {handle_number(5);
+update_win();}
+            private xywh {40 95 35 40} color 237 labelsize 23
+          }
+          Fl_Button {} {
+            label 6
+            callback {handle_number(6);
+update_win();}
+            private xywh {75 95 35 40} color 237 labelsize 23
+          }
+          Fl_Button {} {
+            label 7
+            callback {handle_number(7);
+update_win();}
+            private xywh {5 55 35 40} color 229 labelsize 23
+          }
+          Fl_Button {} {
+            label 8
+            callback {handle_number(8);
+update_win();}
+            private xywh {40 55 35 40} color 229 labelsize 23
+          }
+          Fl_Button {} {
+            label 9
+            callback {handle_number(9);
+update_win();}
+            private xywh {75 55 35 40} color 229 labelsize 23
+          }
+          Fl_Button {} {
+            label {=}
+            callback {handle_action(EQUALS);
+update_win();}
+            private xywh {145 175 35 40} color 1 labelfont 1 labelsize 23
+          }
+          Fl_Button {} {
+            label {+}
+            callback {handle_action(ADD);
+update_win();}
+            private xywh {110 55 35 40} color 141 labelsize 20
+          }
+          Fl_Button {} {
+            label {-}
+            callback {handle_action(SUB);
+update_win();}
+            private xywh {110 95 35 40} color 149 labelsize 23
+          }
+          Fl_Button {} {
+            label {*}
+            callback {handle_action(MUL);
+update_win();}
+            private xywh {110 135 35 40} color 157 labelsize 23
+          }
+          Fl_Button {} {
+            label {/}
+            callback {handle_action(DIV);
+update_win();}
+            private xywh {110 175 35 40} color 165 labelsize 23
+          }
+          Fl_Button {} {
+            label M
+            callback {float tval = val;
+if(mval != 0)
+	set_val(mval);
+mval = tval;
+update_win();}
+            private xywh {5 175 35 40} color 119 labelsize 23
+          }
+          Fl_Button {} {
+            label {.}
+            callback {point = (point ? point : 1);}
+            private xywh {75 175 35 40} color 223 labelsize 24
+            code0 {\#include <stdio.h>}
+          }
+          Fl_Button {} {
+            label C
+            callback {set_val(0);
+point = 0;
+state = 0;
+update_win();}
+            private xywh {145 135 35 40} color 54 labelsize 23
+          }
+          Fl_Button {} {
+            label {+/-}
+            callback {set_val(-val);
+update_win();}
+            private xywh {145 95 35 40} color 93 labelsize 20
+          }
+          Fl_Button {} {
+            label Q
+            callback {MainWindow->hide();}
+            private xywh {145 55 35 40} color 0 labelsize 23 labelcolor 63
+          }
+        }
+      }
+    }
+  }
+  Function {show(int argc, char **argv)} {open
+  } {
+    code {MainWindow->show(argc, argv);} {}
+  }
+  Function {set_val(double newval)} {open private
+  } {
+    code {val=newval;} {}
+  }
+  Function {update_win()} {open
+  } {
+    code {char *str;
+str = fl2str(val);
+if(str == NULL) {
+	handle_error();
+} else {
+	NumberInput->value(str);
+	NumberInput->redraw();
+}} {}
+  }
+  Function {handle_action(int action)} {open private
+  } {
+    code {switch(action) {
+	case ADD:
+	case SUB:
+	case MUL:
+	case DIV:
+		state = 1;
+		act = action;
+		lval = val;
+		break;
+	case EQUALS:
+		state = 1;
+		switch(act) {
+			case ADD:
+				val = lval+val;
+				break;
+			case SUB:
+				val = lval-val;
+				break;
+			case MUL:
+				val = lval*val;
+				break;
+			case DIV:
+				if(val != 0) {
+					val = lval/val;
+				}
+				break;
+		}
+		break;
+}} {}
+  }
+  Function {handle_number(int num)} {open private
+  } {
+    code {if(state == 1) {
+	val = num;
+	state = 0;
+	point = 0;
+} else if(point == 0) {
+	val = (val*10)+num;
+} else {
+	val += ((double)num / pow(10,point));
+	point++;
+}} {}
+  }
+  Function {reset_vals()} {open private
+  } {
+    code {point= 0;
+state = 0;
+act = NONE;
+val  = 0.0;
+lval = 0.0;
+mval = 0.0;} {}
+  }
+  Function {handle_error()} {open private
+  } {
+    code {NumberInput->value("   Error  ");
+NumberInput->redraw();
+reset_vals();} {}
+  }
+} 
